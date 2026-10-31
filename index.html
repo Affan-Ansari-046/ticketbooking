@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=6c67baa7-907e-409c-a44b-5679bd827a46
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TicketBox – Event Booking</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f4ef;--card:#fff;--ink:#1c1b19;--mute:#6f6b63;--line:#e4e0d6;--acc:#d9480f;--acc2:#fff4ec;--ok:#2b8a3e;--vip:#b8860b;--prem:#7048e8;--reg:#1c7ed6;--taken:#cfcac0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141412;--card:#1e1d1a;--ink:#f1eee6;--mute:#a09b90;--line:#33312c;--acc:#ff8a4c;--acc2:#2a1f17;--ok:#69db7c;--vip:#f0c24b;--prem:#a78bfa;--reg:#74c0fc;--taken:#3a3833}}
+:root[data-theme="dark"]{--bg:#141412;--card:#1e1d1a;--ink:#f1eee6;--mute:#a09b90;--line:#33312c;--acc:#ff8a4c;--acc2:#2a1f17;--ok:#69db7c;--vip:#f0c24b;--prem:#a78bfa;--reg:#74c0fc;--taken:#3a3833}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.5px}.logo span{color:var(--acc)}
+nav{display:flex;gap:6px}
+nav button,.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+nav button.on,.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.pri:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.ev .em{font-size:38px}.ev h3{margin:8px 0 4px}.mute{color:var(--mute);font-size:14px}
+.tag{display:inline-block;font-size:12px;font-weight:700;background:var(--acc2);color:var(--acc);padding:2px 9px;border-radius:99px}
+.layout{display:grid;grid-template-columns:1fr 300px;gap:16px}
+@media(max-width:780px){.layout{grid-template-columns:1fr}}
+.stage{background:var(--ink);color:var(--bg);text-align:center;padding:6px;border-radius:8px 8px 40px 40px;font-size:12px;letter-spacing:3px;margin:6px 0 16px}
+.map{overflow-x:auto;padding-bottom:6px}
+.row{display:flex;align-items:center;gap:5px;margin-bottom:5px;min-width:max-content;justify-content:center}
+.rl{width:18px;font-size:12px;color:var(--mute);font-weight:700}
+.seat{width:28px;height:28px;border-radius:7px 7px 4px 4px;border:2px solid;background:transparent;cursor:pointer;font-size:10px;padding:0;color:var(--ink)}
+.seat.vip{border-color:var(--vip)}.seat.prem{border-color:var(--prem)}.seat.reg{border-color:var(--reg)}
+.seat.taken{background:var(--taken);border-color:var(--taken);cursor:not-allowed;color:transparent}
+.seat.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;margin-top:12px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:3px;border:2px solid;vertical-align:-2px;margin-right:4px}
+.line{display:flex;justify-content:space-between;padding:5px 0;font-size:14px}
+.line.tot{border-top:1px dashed var(--line);margin-top:6px;padding-top:10px;font-weight:800;font-size:18px}
+input{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;margin:4px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}.chip{background:var(--acc2);color:var(--acc);border-radius:6px;padding:2px 8px;font-size:13px;font-weight:700}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9;overflow:auto}
+.pass{background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;overflow:hidden;position:relative}
+.pass .l{flex:1;padding:16px;min-width:0}.pass .r{padding:16px;border-left:2px dashed var(--line);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.pass h3{margin:4px 0}.qr{width:96px;height:96px;color:var(--ink)}
+.bid{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--mute)}
+.rcpt{max-width:420px;width:100%}
+.ok{color:var(--ok);font-weight:800}
+@media(max-width:520px){.pass{flex-direction:column}.pass .r{border-left:0;border-top:2px dashed var(--line)}}
+@media print{body *{visibility:hidden}.rcpt,.rcpt *{visibility:visible}.rcpt{position:absolute;left:0;top:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">Ticket<span>Box</span> 🎟️</div>
+    <nav><button id="n-events" class="on" onclick="go('events')">Events</button><button id="n-dash" onclick="go('dash')">My Passes <span id="cnt"></span></button></nav>
+  </header>
+  <main id="app"></main>
+</div>
+<div id="modal"></div>
+
+<script>
+const EVENTS=[
+ {id:'e1',name:'Arijit Singh Live',cat:'Concert',venue:'MMRDA Grounds, BKC, Mumbai',date:'14 Nov 2026',time:'7:00 PM',em:'🎤',m:1.5},
+ {id:'e2',name:'Zakir Khan Stand-up',cat:'Comedy',venue:'NCPA, Nariman Point, Mumbai',date:'22 Nov 2026',time:'8:30 PM',em:'😂',m:.6},
+ {id:'e3',name:'Sunburn EDM Night',cat:'Festival',venue:'Mahalaxmi Racecourse, Mumbai',date:'5 Dec 2026',time:'6:00 PM',em:'🎧',m:1}
+];
+const ROWS='ABCDEFGH'.split(''),COLS=10;
+const TIERS={vip:{n:'VIP',p:3000,rows:'AB'},prem:{n:'Premium',p:1800,rows:'CDE'},reg:{n:'Regular',p:900,rows:'FGH'}};
+const FEE=.05,GST=.18,COUPONS={FIRST10:.10,MUMBAI20:.20};
+const tierOf=r=>Object.keys(TIERS).find(k=>TIERS[k].rows.includes(r));
+const price=(ev,r)=>Math.round(TIERS[tierOf(r)].p*ev.m);
+const inr=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+
+let view='events',ev=null,sel=new Set(),coupon=0,couponCode='';
+let bookings=[];
+try{bookings=JSON.parse(localStorage.getItem('tb_bookings')||'[]')}catch(e){}
+const save=()=>{try{localStorage.setItem('tb_bookings',JSON.stringify(bookings))}catch(e){}};
+
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rnd(seed){let s=seed;return()=>((s=Math.imul(s^s>>>15,2246822519)+1013904223>>>0)/4294967296)}
+function preTaken(e){const r=rnd(hash(e.id)),t=new Set();ROWS.forEach(a=>{for(let i=1;i<=COLS;i++)if(r()<.25)t.add(a+i)});return t}
+function takenSet(e){const t=preTaken(e);bookings.filter(b=>b.eid===e.id).forEach(b=>b.seats.forEach(s=>t.add(s)));return t}
+
+function go(v){view=v;ev=null;sel.clear();coupon=0;couponCode='';render()}
+function open_(id){ev=EVENTS.find(e=>e.id===id);view='book';sel.clear();coupon=0;couponCode='';render()}
+function toggle(s){sel.has(s)?sel.delete(s):(sel.size<8?sel.add(s):alert('Max 8 seats per booking'));render()}
+
+function calc(){
+  const seats=[...sel].sort();
+  const sub=seats.reduce((a,s)=>a+price(ev,s[0]),0);
+  const disc=sub*coupon,fee=(sub-disc)*FEE,gst=(sub-disc+fee)*GST;
+  return{seats,sub,disc,fee,gst,total:sub-disc+fee+gst};
+}
+function applyCoupon(){
+  const c=document.getElementById('cp').value.trim().toUpperCase();
+  if(COUPONS[c]){coupon=COUPONS[c];couponCode=c}else{coupon=0;couponCode='';alert('Invalid coupon. Try FIRST10 or MUMBAI20')}
+  render()
+}
+
+function qr(id){
+  const N=21,r=rnd(hash(id));let d='';
+  const fin=(x,y)=>x<7&&y<7||x>13&&y<7||x<7&&y>13;
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+    let on;
+    if(fin(x,y)){const lx=x%14,ly=y%14;const ex=x>13?x-14:x,ey=y>13?y-14:y;on=ex==0||ex==6||ey==0||ey==6||(ex>=2&&ex<=4&&ey>=2&&ey<=4)}
+    else on=r()>.5;
+    if(on)d+=`<rect x="${x}" y="${y}" width="1" height="1"/>`;
+  }
+  return`<svg class="qr" viewBox="0 0 21 21" fill="currentColor" shape-rendering="crispEdges">${d}</svg>`;
+}
+
+function render(){
+  document.getElementById('n-events').className=view==='events'||view==='book'?'on':'';
+  document.getElementById('n-dash').className=view==='dash'?'on':'';
+  document.getElementById('cnt').textContent=bookings.length?`(${bookings.length})`:'';
+  const app=document.getElementById('app');
+  if(view==='events'){
+    app.innerHTML=`<h2 style="margin:0 0 12px">Upcoming events</h2><div class="grid">`+EVENTS.map(e=>`
+      <div class="card ev"><div class="em">${e.em}</div><span class="tag">${e.cat}</span><h3>${e.name}</h3>
+      <div class="mute">📍 ${e.venue}<br>📅 ${e.date} · ${e.time}</div>
+      <p class="mute">From <b style="color:var(--ink)">${inr(TIERS.reg.p*e.m)}</b></p>
+      <button class="btn pri" onclick="open_('${e.id}')">Select seats →</button></div>`).join('')+`</div>`;
+  }else if(view==='book'){
+    const t=takenSet(ev),c=calc();
+    let map=ROWS.map(r=>`<div class="row"><span class="rl">${r}</span>`+Array.from({length:COLS},(_,i)=>{const s=r+(i+1);
+      const cls=t.has(s)?'taken':sel.has(s)?'sel':tierOf(r);
+      return`<button class="seat ${cls}" ${t.has(s)?'disabled':''} title="${s} · ${inr(price(ev,r))}" onclick="toggle('${s}')">${i+1}</button>`}).join('')+`</div>`).join('');
+    app.innerHTML=`<button class="btn ghost" onclick="go('events')">← Back</button>
+    <h2 style="margin:12px 0 2px">${ev.em} ${ev.name}</h2><div class="mute">${ev.venue} · ${ev.date}, ${ev.time}</div>
+    <div class="layout" style="margin-top:14px"><div class="card"><div class="stage">STAGE</div><div class="map">${map}</div>
+      <div class="legend">${Object.keys(TIERS).map(k=>`<span><i class="dot" style="border-color:var(--${k})"></i>${TIERS[k].n} ${inr(TIERS[k].p*ev.m)}</span>`).join('')}
+      <span><i class="dot" style="background:var(--acc);border-color:var(--acc)"></i>Selected</span><span><i class="dot" style="background:var(--taken);border-color:var(--taken)"></i>Booked</span></div></div>
+    <div class="card"><h3 style="margin:0 0 6px">Summary</h3>
+      ${c.seats.length?`<div class="chips">${c.seats.map(s=>`<span class="chip">${s}</span>`).join('')}</div>
+      <div class="line"><span>Tickets (${c.seats.length})</span><span>${inr(c.sub)}</span></div>
+      ${coupon?`<div class="line ok"><span>Coupon ${couponCode}</span><span>− ${inr(c.disc)}</span></div>`:''}
+      <div class="line"><span>Convenience fee (5%)</span><span>${inr(c.fee)}</span></div>
+      <div class="line"><span>GST (18%)</span><span>${inr(c.gst)}</span></div>
+      <div class="line tot"><span>Total</span><span>${inr(c.total)}</span></div>
+      <input id="cp" placeholder="Coupon (FIRST10)" value="${couponCode}"><button class="btn" style="width:100%;margin-bottom:10px" onclick="applyCoupon()">Apply coupon</button>
+      <input id="nm" placeholder="Your name"><input id="em" placeholder="Email" type="email">
+      <button class="btn pri" style="width:100%" onclick="book()">Pay ${inr(c.total)} & Book</button>`
+      :`<p class="mute">Seats select karo — total yahan calculate hoga.</p>`}
+    </div></div>`;
+  }else{
+    app.innerHTML=`<h2 style="margin:0 0 12px">My passes</h2>`+(bookings.length?`<div style="display:grid;gap:14px">`+bookings.slice().reverse().map(b=>`
+      <div class="pass"><div class="l"><span class="tag">${b.cat}</span><h3>${b.em} ${b.ename}</h3>
+        <div class="mute">📍 ${b.venue}<br>📅 ${b.date}, ${b.time}<br>👤 ${b.name}</div>
+        <div class="chips">${b.seats.map(s=>`<span class="chip">${s}</span>`).join('')}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="receipt('${b.id}')">Receipt</button><button class="btn ghost" onclick="cancel('${b.id}')">Cancel</button></div></div>
+      <div class="r">${qr(b.id)}<div class="bid">${b.id}</div><div class="ok">✔ VALID</div></div></div>`).join('')+`</div>`
+      :`<div class="card mute">Abhi koi pass nahi hai. Kisi event ke seats book karo!</div>`);
+  }
+}
+
+function book(){
+  const name=document.getElementById('nm').value.trim(),email=document.getElementById('em').value.trim();
+  const c=calc();
+  if(!c.seats.length)return;
+  if(!name||!/^\S+@\S+\.\S+$/.test(email)){alert('Valid name aur email daalo');return}
+  if(c.seats.some(s=>takenSet(ev).has(s))){alert('Seat already booked!');return}
+  const b={id:'TKT'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase(),eid:ev.id,ename:ev.name,cat:ev.cat,em:ev.em,venue:ev.venue,date:ev.date,time:ev.time,
+    seats:c.seats,name,email,sub:c.sub,disc:c.disc,fee:c.fee,gst:c.gst,total:c.total,code:couponCode,at:new Date().toLocaleString('en-IN')};
+  bookings.push(b);save();sel.clear();coupon=0;couponCode='';view='dash';render();receipt(b.id);
+}
+function cancel(id){if(confirm('Booking cancel karein? Seats free ho jayengi.')){bookings=bookings.filter(b=>b.id!==id);save();render()}}
+function receipt(id){
+  const b=bookings.find(x=>x.id===id);if(!b)return;
+  document.getElementById('modal').innerHTML=`<div class="modal" onclick="if(event.target===this)closeM()"><div class="card rcpt">
+    <div style="text-align:center"><div class="ok" style="font-size:20px">✔ Booking Confirmed</div><div class="bid">${b.id}</div></div><hr style="border:0;border-top:1px dashed var(--line);margin:12px 0">
+    <div class="line"><span>Event</span><b>${b.ename}</b></div><div class="line"><span>Venue</span><span style="text-align:right">${b.venue}</span></div>
+    <div class="line"><span>Date</span><span>${b.date}, ${b.time}</span></div><div class="line"><span>Name</span><span>${b.name}</span></div>
+    <div class="line"><span>Seats</span><b>${b.seats.join(', ')}</b></div><hr style="border:0;border-top:1px dashed var(--line);margin:8px 0">
+    <div class="line"><span>Tickets</span><span>${inr(b.sub)}</span></div>
+    ${b.disc?`<div class="line ok"><span>Coupon ${b.code}</span><span>− ${inr(b.disc)}</span></div>`:''}
+    <div class="line"><span>Convenience fee</span><span>${inr(b.fee)}</span></div><div class="line"><span>GST</span><span>${inr(b.gst)}</span></div>
+    <div class="line tot"><span>Paid</span><span>${inr(b.total)}</span></div>
+    <div style="display:flex;justify-content:center;margin:10px 0">${qr(b.id)}</div>
+    <div class="mute" style="text-align:center;font-size:12px">Booked on ${b.at}</div>
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn" style="flex:1" onclick="try{window.print()}catch(e){}">Print</button><button class="btn pri" style="flex:1" onclick="closeM()">Done</button></div>
+  </div></div>`;
+}
+function closeM(){document.getElementById('modal').innerHTML=''}
+render();
+</script>
+</body>
+</html>
+<script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="6c67baa7-907e-409c-a44b-5679bd827a46" data-app-host="app.netlify.com" data-account-tier="free"></script>
